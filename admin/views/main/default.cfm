@@ -32,6 +32,12 @@
 </cfsilent>
 <cfoutput>
 	<div class="fieldset-wrap">
+		<cfif structkeyexists (rc, "success")>
+           <div class="alert alert-success">
+               <button type="button" class="close" data-dismiss="alert">&times;</button>
+               <strong>Success!</strong> #rc.success#
+           </div>
+		</cfif>
 	<h2>Razuna plugin</h2>
 	<form action="#buildurl('main.save')#" class="form-horizontal" method="post">
 		<div class="fieldset">

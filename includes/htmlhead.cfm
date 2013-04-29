@@ -33,7 +33,11 @@
 <cfoutput>
 <link rel="stylesheet" id="theme" href="#pluginPath#assets/css/jstree/style.css" type="text/css" media="screen" />
 <link rel="stylesheet" id="theme" href="#pluginPath#assets/css/razuna.css" type="text/css" media="screen" />
-<!---<script src="#pluginPath#assets/js/CKEditor/razuna/plugin.js" type="text/javascript"></script>--->
+<script>
+if ('CKEDITOR' in window) {
+   pluginFolder = "#pluginPath#";
+}
+</script>
 <script src="#pluginPath#assets/js/razuna.js" type="text/javascript"></script>
 <script src="#pluginPath#assets/js/jquery.jstree.js" type="text/javascript"></script>
 </cfoutput>

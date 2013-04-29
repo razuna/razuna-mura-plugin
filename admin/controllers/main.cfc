@@ -73,8 +73,8 @@ component persistent="false" accessors="true" output="false" extends="controller
 					rc.save = rc.settingObj.create(rc);
 				}
 			}
-			fw.redirect('main');
-				
+			rc.success="Your details saved successfully.";
+			fw.redirect(action='main',preserve='success' );
 	}
 
 }

@@ -58,5 +58,10 @@ component persistent="false" accessors="true" output="false" extends="controller
 	public any function default(required rc) {
 		rc.qFolders = rc.razunaObj.getFolders();
 	}
+	
+	public any function getnodes(required rc) {
+		rc.qFolders = rc.razunaObj.getFolders(rc.folderid);
+		rc.qAssets = rc.razunaObj.getassets(rc.folderid);
+	}
 
 }

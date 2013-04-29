@@ -68,104 +68,93 @@
 			// checkdb method is not having remote access. Need to discuss about this with Nitai
 			var apiURL = this.auth_uri & "method=checkdb&api_key=" & this.config_APIKey ;
 			var result = doHttp(apiURL);
-			 
-			return  deserializeJSON(result.Filecontent);
+			return  result;
 		}
 		
 		query function getFolders( string folderid = "0" ){
 		
 			var apiURL = this.folder_uri & "method=getfolders&api_key=" & this.config_APIKey & "&folderid=" & arguments.folderid;
 			var result = doHttp(apiURL);
-			var struct = deserializeJSON(result.Filecontent);
-			
-			var q = querynew (arrayToList(struct.columns)); //we can pass struct.data as third argument in CF 10 
-			
-			for (i=1;i LTE ArrayLen(struct.data);i=i+1) {
-				temp = queryAddRow(q);
-				for (j=1;j LTE ArrayLen(struct.columns);j=j+1) {	
-					temp = QuerySetCell( q, struct.columns[j], struct.data[i][j], i );
+			if(arraylen(result.columns) eq 3 )
+				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
+			else{
+				var q = querynew (arrayToList(result.columns)); //we can pass result.data as third argument in CF 10 
+				for (i=1;i LTE ArrayLen(result.data);i=i+1) {
+					temp = queryAddRow(q);
+					for (j=1;j LTE ArrayLen(result.columns);j=j+1) {	
+						temp = QuerySetCell( q, result.columns[j], result.data[i][j], i );
+					}
 				}
+				var qry = removeCurrentFolder (q, arguments.folderid);
 			}
-			
-			var qry = removeCurrentFolder (q, arguments.folderid);
-			 
 			return qry;
 		}
 		
+		//Get the renditions details for the existing assets. 
+		 query function getrenditions( required string assetid, required string assettype){
+			var apiURL = this.asset_uri & "method=getrenditions&api_key=" & this.config_APIKey & "&assetid=" & arguments.assetid& "&assettype=" & arguments.assettype;
+			var result = doHttp(apiURL);
+			if(arraylen(result.columns) eq 3 )
+				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
+			else{
+				var q = querynew (arrayToList(result.columns));//we can pass result.data as third argument in CF 10 
+				for (i=1;i LTE ArrayLen(result.data);i=i+1) {
+					temp = queryAddRow(q);
+					for (j=1;j LTE ArrayLen(result.columns);j=j+1) {        
+						temp = QuerySetCell( q, result.columns[j], result.data[i][j], i );
+						}
+					}
+				}
+				return  q;
+			}
 		
-		
+		//Get the all assets details using API. 
 		query function getassets( required string folderID ){
 			var apiURL = this.folder_uri & "method=getassets&api_key=" & this.config_APIKey & "&folderid=" & arguments.folderID;
 			var result = doHttp(apiURL);
-			
-			var struct = deserializeJSON(result.Filecontent);
-			
-			if(arraylen(struct.columns) eq 3 )
+			if(arraylen(result.columns) eq 3 )
 				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
 			else{
-				var q = querynew (arrayToList(struct.columns));//we can pass struct.data as third argument in CF 10 
-			
-			
-				for (i=1;i LTE ArrayLen(struct.data);i=i+1) {
+				var q = querynew (arrayToList(result.columns));//we can pass result.data as third argument in CF 10 
+				for (i=1;i LTE ArrayLen(result.data);i=i+1) {
 					temp = queryAddRow(q);
-					for (j=1;j LTE ArrayLen(struct.columns);j=j+1) {	
-						temp = QuerySetCell( q, struct.columns[j], struct.data[i][j], i );
+					for (j=1;j LTE ArrayLen(result.columns);j=j+1) {	
+						temp = QuerySetCell( q, result.columns[j], result.data[i][j], i );
 					}
 				}
 			}
-				
-			
 			return  q;
 		}
 		
+		//Get the folder details. 
 		query function getfolder( required string folderID ){
 			var apiURL = this.folder_uri & "method=getfolder&api_key=" & this.config_APIKey & "&folderid=" & arguments.folderID;
 			var result = doHttp(apiURL);
-			var struct = deserializeJSON(result.Filecontent);
-			var q = querynew (arrayToList(struct.columns));//we can pass struct.data as third argument in CF 10 
-			for (i=1;i LTE ArrayLen(struct.data);i=i+1) {
-				temp = queryAddRow(q);
-				for (j=1;j LTE ArrayLen(struct.columns);j=j+1) {	
-					temp = QuerySetCell( q, struct.columns[j], struct.data[i][j], i );
+			if(arraylen(result.columns) eq 3 )
+				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
+			else{
+				var q = querynew (arrayToList(result.columns));//we can pass result.data as third argument in CF 10 
+				for (i=1;i LTE ArrayLen(result.data);i=i+1) {
+					temp = queryAddRow(q);
+					for (j=1;j LTE ArrayLen(result.columns);j=j+1) {	
+						temp = QuerySetCell( q, result.columns[j], result.data[i][j], i );
+					}
 				}
 			}
-			
 			return  q;
 		}
 		
 		struct function removefolder( required string folderID ){
 			var apiURL = this.folder_uri & "method=removefolder&api_key=" & this.config_APIKey & "&folder_id=" & arguments.folderID;
 			var result = doHttp(apiURL);
-			var struct = deserializeJSON(result.Filecontent);
-
-			return struct;
+			return result;
 		}
 		
 		struct function createfolder( required string folder_name, string folder_owner ="", string folder_related ="", string folder_collection ="", string folder_description = "" ){
 			var apiURL = this.folder_uri & "method=setfolder&api_key=" & this.config_APIKey & "&folder_name=" & arguments.folder_name;
 			var result = doHttp(apiURL);
-			var struct = deserializeJSON(result.Filecontent);
-
-			return struct;
+			return result;
 		}
-		
-		function a(){
-			var apiURL = this.auth_uri & "method=checkdb&api_key=" & this.config_APIKey ;
-			var result = doHttp(apiURL);
-			var struct = deserializeJSON(result.Filecontent);
-			var q = querynew (arrayToList(struct.columns));//we can pass struct.data as third argument in CF 10 
-			
-			
-			for (i=1;i LTE ArrayLen(struct.data);i=i+1) {
-				temp = queryAddRow(q);
-				for (j=1;j LTE ArrayLen(struct.columns);j=j+1) {	
-					temp = QuerySetCell( q, struct.columns[j], struct.data[i][j], i );
-				}
-			}
-			
-			return  q;
-		}
-		
 	</cfscript>
 	
 	
@@ -184,12 +173,9 @@
 		
 	<cffunction name="doHttp" access="private" >
 		<cfargument name="apiURL" required="true" type="string" >
-		
 		<cfset var res = {}>
-		
 		<cfhttp url="#arguments.apiURL#" method="get" result="res">
-		
-		<cfreturn res>
+		<cfreturn deserializeJSON(res.Filecontent)>
 	</cffunction>
 	
 </cfcomponent>
