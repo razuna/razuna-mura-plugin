@@ -73,7 +73,7 @@
 		
 		query function getFolders( string folderid = "0" ){
 		
-			var apiURL = this.folder_uri & "method=getfolders&api_key=" & this.config_APIKey & "&folderid=" & arguments.folderid;
+			var apiURL = this.folder_uri & "method=getfolders&api_key=" & this.config_hostid&'-'&this.config_APIKey & "&folderid=" & arguments.folderid;
 			var result = doHttp(apiURL);
 			if(arraylen(result.columns) eq 3 )
 				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
@@ -92,7 +92,7 @@
 		
 		//Get the renditions details for the existing assets. 
 		 query function getrenditions( required string assetid, required string assettype){
-			var apiURL = this.asset_uri & "method=getrenditions&api_key=" & this.config_APIKey & "&assetid=" & arguments.assetid& "&assettype=" & arguments.assettype;
+			var apiURL = this.asset_uri & "method=getrenditions&api_key=" & this.config_hostid&'-'&this.config_APIKey & "&assetid=" & arguments.assetid& "&assettype=" & arguments.assettype;
 			var result = doHttp(apiURL);
 			if(arraylen(result.columns) eq 3 )
 				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
@@ -110,7 +110,7 @@
 		
 		//Get the all assets details using API. 
 		query function getassets( required string folderID ){
-			var apiURL = this.folder_uri & "method=getassets&api_key=" & this.config_APIKey & "&folderid=" & arguments.folderID;
+			var apiURL = this.folder_uri & "method=getassets&api_key=" & this.config_hostid&'-'&this.config_APIKey & "&folderid=" & arguments.folderID;
 			var result = doHttp(apiURL);
 			if(arraylen(result.columns) eq 3 )
 				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
@@ -128,7 +128,7 @@
 		
 		//Get the folder details. 
 		query function getfolder( required string folderID ){
-			var apiURL = this.folder_uri & "method=getfolder&api_key=" & this.config_APIKey & "&folderid=" & arguments.folderID;
+			var apiURL = this.folder_uri & "method=getfolder&api_key=" & this.config_hostid&'-'&this.config_APIKey & "&folderid=" & arguments.folderID;
 			var result = doHttp(apiURL);
 			if(arraylen(result.columns) eq 3 )
 				var q = querynew ("CALLEDWITH, CLOUD_URL, CLOUD_URL_ORG, DATEADD, DATECHANGE, DESCRIPTION, EXTENSION, EXTENSION_THUMB, FILENAME, FILENAME_ORG, FOLDER_ID, HEIGHT, ID, KEYWORDS, KIND, LOCAL_URL_ORG, LOCAL_URL_THUMB, PATH_TO_ASSET, RESPONSECODE, SIZE, SUBASSETS, TOTALASSETSCOUNT, VIDEO_IMAGE, WIDTH");
@@ -145,25 +145,23 @@
 		}
 		
 		struct function removefolder( required string folderID ){
-			var apiURL = this.folder_uri & "method=removefolder&api_key=" & this.config_APIKey & "&folder_id=" & arguments.folderID;
+			var apiURL = this.folder_uri & "method=removefolder&api_key=" & this.config_hostid&'-'&this.config_APIKey & "&folder_id=" & arguments.folderID;
 			var result = doHttp(apiURL);
 			return result;
 		}
 		
 		struct function createfolder( required string folder_name, string folder_owner ="", string folder_related ="", string folder_collection ="", string folder_description = "" ){
-			var apiURL = this.folder_uri & "method=setfolder&api_key=" & this.config_APIKey & "&folder_name=" & arguments.folder_name;
+			var apiURL = this.folder_uri & "method=setfolder&api_key=" & this.config_hostid&'-'&this.config_APIKey & "&folder_name=" & arguments.folder_name;
 			var result = doHttp(apiURL);
 			return result;
 		}
 	</cfscript>
-	
 	
 	<cffunction name="removeCurrentFolder" access="private" >
 		<cfargument name="q" required="true" type="query" >
 		<cfargument name="folderid" required="true" type="string" >
 		
 		<cfset var res = {}>
-		
 		<cfquery dbtype="query" name="res">
 			select * from arguments.q where folder_id != '#arguments.folderid#'
 		</cfquery>

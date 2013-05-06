@@ -1,0 +1,1 @@
+﻿<cfmodule template="..\cfmediaplayer\mediaplayer.cfm" attributecollection="#local.mp#">

@@ -56,10 +56,10 @@ if ('CKEDITOR' in window) {
 			add_to_editor = "<a href='"+url+"'><img title='" + $('#img_title_text').val() + "' src='" + $("input[type='radio'][name='image-type']:checked").val() + "' alt='"+$('#alt_text').val()+"'></a>";
 		}
 		else if ($(this).hasClass('audio')) {
-			add_to_editor = "[RAZUNA_PLAYER=" + $('input[type="radio"][name="aud_path"]:checked').val() + "," + $(this).attr('data-id') + ",aud,450,30]";
+			add_to_editor = "[mura]event.razunaMediaPlayer.dspMedia(file='" + $('input[type="radio"][name="aud_path"]:checked').val() + "',width=450,height=30,sharecode=true,embedlink=true)[/mura]";
 		}
 		else if ($(this).hasClass('video')) {
-			add_to_editor = "[RAZUNA_PLAYER=" + $('input[type="radio"][name="vid_path"]:checked').val() + "," + $(this).attr('data-id') + ",vid," + $('#width').val() + "," + $('#height').val() + "]";
+			add_to_editor = "[mura]event.razunaMediaPlayer.dspMedia(file='" + $('input[type="radio"][name="vid_path"]:checked').val() + "',width='" + $('#width').val() + "',height='" + $('#height').val() + "',sharecode=true,embedlink=true)[/mura]";
 		}
 		else if ($(this).hasClass('document')) {
 			if ($('#doc_link_text').val() == "") {

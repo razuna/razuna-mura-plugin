@@ -44,10 +44,10 @@
 			<div class="control-group">
 				<label class="control-label" for="razuna_servertype">Server Type</label>
 				<div class="controls">
-					<label for="razuna_servertype_hosted" class="radio inline">
+					<label for="razuna_servertype_hosted" class="radio inline form_labels">
 						<input type="radio" name="razuna_servertype" onchange="checkServerType();"value="hosted" id="razuna_servertype_hosted" <cfif rc.settings.razuna_servertype eq "hosted">checked="checked"</cfif>> Hosted (razuna.com)
 					</label>
-					<label for="razuna_servertype_self" class="radio inline">
+					<label for="razuna_servertype_self" class="radio inline form_labels">
 						<input type="radio" name="razuna_servertype" onchange="checkServerType();" value="self" id="razuna_servertype_self" <cfif rc.settings.razuna_servertype eq "self">checked="checked"</cfif>> Self hosted
 					</label>
 				</div>
