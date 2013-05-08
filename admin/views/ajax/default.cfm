@@ -48,18 +48,3 @@
 	</table>
 	</div>
 </div>
-<script type="text/javascript">
-	$(document).ready(function(){
-		$('#search').bind('click', function() {
-			$("#tagTree").jstree('open_all');
-			$('#inner-div').hide();
-			$('#loader-div').hide();
-			$('#tagTree').css("width","835px");
-			$('#full_page_loader').css('display','block');
-			setTimeout(function(){
-				$("#tagTree").jstree("search", $('#search_box').val());
-				$('#full_page_loader').css('display','none');
-			}, 2000);  
-		});
-	});
-</script>

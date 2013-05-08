@@ -53,6 +53,8 @@
 					tot=tot+1;
 					arr[x]["attr"]["rend_extension"&tot] = "#qRenditions.EXTENSION[r]#";
 					arr[x]["attr"]["rend_local_url_org"&tot] = "#qRenditions.LOCAL_URL_ORG[r]#";
+					arr[x]["attr"]["rend_height"&tot] = "#qRenditions.HEIGHT[r]#";
+					arr[x]["attr"]["rend_width"&tot] = "#qRenditions.WIDTH[r]#";
 				}
 			}
 			arr[x]["attr"]["rend_total"] = tot;//Total number of renditions

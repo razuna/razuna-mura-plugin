@@ -45,21 +45,37 @@ if ('CKEDITOR' in window) {
 		});
 		
 	})();
+	$('input[name=radio_path]').live('change',function(){
+		$('#width').val(parseInt($(this).attr('data-width')));
+		$('#height').val(parseInt($(this).attr('data-height')));
+	});
+	
+	$('#search').live('click', function() {
+		$("#tagTree").jstree('open_all');
+		$('#inner-div').hide();
+		$('#loader-div').hide();
+		$('#tagTree').css("width","835px");
+		$('#full_page_loader').css('display','block');
+		setTimeout(function(){
+			$("#tagTree").jstree("search", $('#search_box').val());
+			$('#full_page_loader').css('display','none');
+		}, 2000);  
+	});
 	$('#insert_into_post').live('click',function(){
 		if ($(this).hasClass('image')) {
 			if ($('.urlfield').val().length){
 				url = $('.urlfield').val();
 			}
 			else{
-				url = $("input[type='radio'][name='image-type']:checked").val();
+				url = $("input[type='radio'][name='radio_path']:checked").val();
 			}
-			add_to_editor = "<a href='"+url+"'><img title='" + $('#img_title_text').val() + "' src='" + $("input[type='radio'][name='image-type']:checked").val() + "' alt='"+$('#alt_text').val()+"'></a>";
+			add_to_editor = "<a href='"+url+"'><img title='" + $('#img_title_text').val() + "' src='" + $("input[type='radio'][name='radio_path']:checked").val() + "' alt='"+$('#alt_text').val()+"'></a>";
 		}
 		else if ($(this).hasClass('audio')) {
-			add_to_editor = "[mura]event.razunaMediaPlayer.dspMedia(file='" + $('input[type="radio"][name="aud_path"]:checked').val() + "',width=450,height=30,sharecode=true,embedlink=true)[/mura]";
+			add_to_editor = "[mura]event.razunaMediaPlayer.dspMedia(file='" + $('input[type="radio"][name="radio_path"]:checked').val() + "',width=450,height=30,sharecode=true,embedlink=true)[/mura]";
 		}
 		else if ($(this).hasClass('video')) {
-			add_to_editor = "[mura]event.razunaMediaPlayer.dspMedia(file='" + $('input[type="radio"][name="vid_path"]:checked').val() + "',width='" + $('#width').val() + "',height='" + $('#height').val() + "',sharecode=true,embedlink=true)[/mura]";
+			add_to_editor = "[mura]event.razunaMediaPlayer.dspMedia(file='" + $('input[type="radio"][name="radio_path"]:checked').val() + "',width='" + $('#width').val() + "',height='" + $('#height').val() + "',image='"+$('input[type="radio"][name="radio_path"]:checked').attr('data-image-thumb')+"',sharecode=true,embedlink=true)[/mura]";
 		}
 		else if ($(this).hasClass('document')) {
 			if ($('#doc_link_text').val() == "") {
@@ -68,7 +84,7 @@ if ('CKEDITOR' in window) {
 				return false;
 			}
 			else {
-				add_to_editor = "<a href = '" + $('input[type="radio"][name="doc_path"]:checked').val() + "'>" + $('#doc_link_text').val() + "</a>";
+				add_to_editor = "<a href = '" + $('input[type="radio"][name="radio_path"]:checked').val() + "' target='_blank'>" + $('#doc_link_text').val() + "</a>";
 			}
 		}
 		var imgHtml = CKEDITOR.instances[$('#instances').val()].getData();
@@ -76,7 +92,7 @@ if ('CKEDITOR' in window) {
 		removAll();
 		$('#razunaModalWindow').dialog("close");
 	});
-
+	
 	function removAll(){
 		$('.inner-div').remove();
 		$('#loader-div').hide();
@@ -119,24 +135,24 @@ if ('CKEDITOR' in window) {
 								$('#loader-div').show();
 								var type = $(target).attr('data-kind');
 								if(type == 'aud'){
-									var content='<tbody><tr><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind : </strong><span>Audio</span><br><table border="0"><tr><td>&nbsp;</td><td ><div><input type="radio" checked="checked" name="aud_path" class="aud_path radio" value="'+$(target).attr('data-local_url_org')+'" id="aud_path"><label for="aud_path_orig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><br><button type="button" data-id="'+$(target).attr('id')+'" id="insert_into_post" class="btn audio">Insert into Post</button></td></tr></tbody>';
+									var content='<tbody><tr><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind : </strong><span>Audio</span><br><table border="0" id="renditions"><tr><td>&nbsp;</td><td ><div><input type="radio" checked="checked" name="radio_path" class="radio_path radio" value="'+$(target).attr('data-local_url_org')+'" id="radio_path" data-height="'+$(target).attr('data-height')+'" data-width="'+$(target).attr('data-width')+'"><label for="radio_path_orig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><br><button type="button" data-id="'+$(target).attr('id')+'" id="insert_into_post" class="btn audio">Insert into Post</button></td></tr></tbody>';
 								}
 								else if(type == 'img'){
 									var none="javascript: $('.urlfield').val('');";
 									var original="javascript: $('.urlfield').val($('.image-size-original').val());";
 									var thumbnail="javascript: $('.urlfield').val($('.image-size-thumbnail').val());";
-									var content='<tbody><tr><td><img src="'+$(target).attr('data-local_url_thumb')+'" id="show-image"></td><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind:</strong><span>Image</span><br><table border="0" id="renditions"><tr><td><strong>Size:</strong></td><td><div class="image-size-item"><input type="radio" checked="checked" name="image-type" class="image-size-thumbnail radio" value="'+$(target).attr('data-local_url_thumb')+'" id="image-type"><label for="image-size" class="form_labels">Thumbnail</label></div></td></tr><tr ><td>&nbsp;</td><td ><div class="image-size-item"><input type="radio" name="image-type" class="image-size-original radio" value="'+$(target).attr('data-local_url_org')+'" id="image-type"><label for="image-sizeorig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><strong>Alternate text:</strong></td><td><input type="text" id="alt_text" value="'+$(target).attr('data-filename_org')+'" class="alt"></td></tr><tr><td><strong>Title:</strong></td><td><input type="text" value="" id="img_title_text"></td></tr><tr><td><strong>Link URL:</strong></td><td><input type="text" class="urlfield text"></td></tr><tr><td style="text-align:center;" colspan="3"><br><button onclick="'+none+'" class="btn none">None</button>&nbsp;&nbsp;<button onclick="'+original+'" class="btn image_org">File Original Sizee</button>&nbsp;&nbsp;<button onclick="'+thumbnail+'" class="btn image_thumb">File Thumbnail Sizee</button>&nbsp;&nbsp;</td></tr><tr><td colspan="3" style="text-align:center;"><br><button id="insert_into_post" class="btn image">Insert into Post</button></td></tr></tbody>';
+									var content='<tbody><tr><td><img src="'+$(target).attr('data-local_url_thumb')+'" id="show-image"></td><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind:</strong><span>Image</span><br><table border="0" id="renditions"><tr><td><strong>Size:</strong></td><td><div class="image-size-item"><input type="radio" checked="checked" name="radio_path" class="image-size-thumbnail radio" value="'+$(target).attr('data-local_url_thumb')+'" id="radio_path" data-height="'+$(target).attr('data-height')+'" data-width="'+$(target).attr('data-width')+'"><label for="image-size" class="form_labels">Thumbnail</label></div></td></tr><tr ><td>&nbsp;</td><td ><div class="image-size-item"><input type="radio" name="radio_path" class="image-size-original radio" value="'+$(target).attr('data-local_url_org')+'" id="radio_path"><label for="image-sizeorig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><strong>Alternate text:</strong></td><td><input type="text" id="alt_text" value="'+$(target).attr('data-filename_org')+'" class="alt"></td></tr><tr><td><strong>Title:</strong></td><td><input type="text" value="" id="img_title_text"></td></tr><tr><td><strong>Link URL:</strong></td><td><input type="text" class="urlfield text"></td></tr><tr><td style="text-align:center;" colspan="3"><br><button onclick="'+none+'" class="btn none">None</button>&nbsp;&nbsp;<button onclick="'+original+'" class="btn image_org">File Original Size</button>&nbsp;&nbsp;<button onclick="'+thumbnail+'" class="btn image_thumb">File Thumbnail Size</button>&nbsp;&nbsp;</td></tr><tr><td colspan="3" style="text-align:center;"><br><button id="insert_into_post" class="btn image">Insert into Post</button></td></tr></tbody>';
 								}
 								else if(type == 'doc'){
-									var content='<tbody><tr><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind:</strong><span>Document</span><br><table border="0"><tr><td>&nbsp;</td><td ><div><input type="radio" checked="checked" name="doc_path" class="doc_path radio" value="'+$(target).attr('data-local_url_org')+'" id="doc_path"><label for="doc-path-orig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><strong>Link Text:</strong></td><td><input type="text" value="" id="doc_link_text"></td></tr><tr><td>&nbsp;</td><td><br><button type="button" id="insert_into_post" class="btn document">Insert into Post</button></td></tr></tbody>';
+									var content='<tbody><tr><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind : </strong><span>Document</span><br><table border="0" id="renditions"><tr><td>&nbsp;</td><td ><div><input type="radio" checked="checked" name="radio_path" class="radio_path radio" value="'+$(target).attr('data-local_url_org')+'" id="radio_path" data-height="'+$(target).attr('data-height')+'" data-width="'+$(target).attr('data-width')+'"><label for="doc-path-orig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><strong>Link Text:</strong></td><td><input type="text" value="" id="doc_link_text"></td></tr><tr><td>&nbsp;</td><td><br><button type="button" id="insert_into_post" class="btn document">Insert into Post</button></td></tr></tbody>';
 								}
 								else if(type == 'vid'){
-									var content='<tbody><tr><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind:</strong><span>Vidio</span><br><table border="0"><tr><td>&nbsp;</td><td ><div class="image-size-item"><input type="radio" checked="checked" name="vid_path" class="image-size-original radio" value="'+$(target).attr('data-local_url_org')+'" id="vid_path"><label for="vid_path_orig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><strong>Width:</strong></td><td><input type="text" id="width" value="'+$(target).attr('data-width').toString().split(".")[0]+'" class="width"></td></tr><tr><td><strong>Height:</strong></td><td><input type="text" value="'+$(target).attr('data-height').toString().split(".")[0]+'" class="height" id="height"></td></tr><tr><td>&nbsp;</td><td><br><button type="button" data-id="'+$(target).attr('id')+'" id="insert_into_post" class="btn video">Insert into Post</button></td></tr></tbody>';
+									var content='<tbody><tr><td valign="top"><strong>File name : </strong><span>'+$(target).attr('data-filename_org')+'</span><br><strong>Kind : </strong><span>Video</span><br><table border="0" id="renditions"><tr><td>&nbsp;</td><td ><div class="image-size-item"><input type="radio" checked="checked" name="radio_path" class="image-size-original radio" value="'+$(target).attr('data-local_url_org')+'" id="radio_path" data-height="'+$(target).attr('data-height')+'" data-width="'+$(target).attr('data-width')+'" data-image-thumb="'+$(target).attr('data-local_url_thumb')+'"><label for="radio_path_orig" class="form_labels">Original</label></div></td></tr></table></td></tr><tr><td><strong>Width:</strong></td><td><input type="text" id="width" value="'+$(target).attr('data-width').toString().split(".")[0]+'" class="width"></td></tr><tr><td><strong>Height:</strong></td><td><input type="text" value="'+$(target).attr('data-height').toString().split(".")[0]+'" class="height" id="height"></td></tr><tr><td>&nbsp;</td><td><br><button type="button" data-id="'+$(target).attr('id')+'" id="insert_into_post" class="btn video">Insert into Post</button></td></tr></tbody>';
 								}
 								$('.describe').html(content);
 								$('.rend').remove();
 								for(x=1; x<=$(target).attr('rend_total'); x++){
-									$('#renditions').append("<tr class='rend'><td><strong>&nbsp;</strong></td><td><div class='image-size-item'><input type='radio' name='image-type' class='image-size-rend radio' value='"+$(target).attr('rend_local_url_org'+x)+"' id='image-type'><label for='image-size-renditions' class='form_labels'>"+$(target).attr('rend_extension'+x).toUpperCase()+"</label></div></td></tr>");
+									$('#renditions').append("<tr class='rend'><td><strong>&nbsp;</strong></td><td><div class='image-size-item'><input type='radio' name='radio_path' class='image-size-rend radio' value='"+$(target).attr('rend_local_url_org'+x)+"' id='radio_path' data-height='"+$(target).attr('rend_height'+x)+"' data-width='"+$(target).attr('rend_width'+x)+"' data-image-thumb='"+$(target).attr('data-local_url_thumb')+"'><label for='image-size-renditions' class='form_labels'>"+$(target).attr('rend_extension'+x).toUpperCase()+' ('+ parseInt($(target).attr('rend_width'+x))+'px X '+parseInt($(target).attr('rend_height'+x))+'px)'+"</label></div></td></tr>");
 								}
 								$('#razunaModalWindow').before($('#razunaImageDetails').html());
 								$('#inner-div').addClass('inner-div');
