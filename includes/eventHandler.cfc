@@ -58,7 +58,7 @@ component persistent="false" accessors="true" output="true" extends="mura.plugin
 	public any function onRenderStart(required struct $, required event ) {
 		$.rmp = this;
 		event.razunaMediaPlayer = this;
-		variables.pluginpath="/plugins/RazunaPlugin/";
+		variables.pluginpath="/plugins/#pluginconfig.getdirectory()#/";
 	}
 	
 	function checkAjaxRequest(){
